@@ -1,5 +1,6 @@
 package aks.wardrobe.trapstar;
 
+import aks.wardrobe.consts.Other;
 import org.jsoup.nodes.Element;
 import java.util.List;
 

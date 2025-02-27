@@ -1,5 +1,6 @@
 package aks.wardrobe.trapstar;
 
+import aks.wardrobe.consts.Other;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -23,7 +24,7 @@ public class FitService {
         }
         return null;
     }
-    public List<Element> getElements(Item item){
+    public List<Element> getElements(Item item, String filter){
 
         try{
             Document doc = Jsoup.connect(item.getLink()).get();
@@ -31,6 +32,8 @@ public class FitService {
             Element ulElement = doc.selectFirst(item.getCssQuery());
             if(ulElement != null){
                 Elements items = ulElement.select(item.getTarget());
+                // REMOVE TRACKSUITS because they aren't JOGGERS duh
+                if(filter != null) items.removeIf(e -> e.text().contains(filter));
                 return items.stream().toList();
             }
         }catch(IOException e){
@@ -52,6 +55,9 @@ public class FitService {
         shirt = fit.getShirts().get(randomShirt);
         jogger = fit.getBottoms().get(randomJogger);
 
+        String filter = "Tracksuit";
+        System.out.println(jogger.text().contains(filter));
+        System.out.println("Text in question: " + jogger.text());
 
         return List.of(shirt, jogger);
     }

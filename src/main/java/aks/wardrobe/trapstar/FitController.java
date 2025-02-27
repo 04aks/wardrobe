@@ -3,6 +3,7 @@ package aks.wardrobe.trapstar;
 import java.util.List;
 import java.util.Random;
 
+import aks.wardrobe.consts.Other;
 import org.jsoup.nodes.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +24,7 @@ public class FitController {
     private final FitService fitService;
     public FitController(FitService fitService){
         this.fitService = fitService;
-        fit = new Fit(fitService.getElements(shirt), fitService.getElements(jogger));
+        fit = new Fit(fitService.getElements(shirt, null), fitService.getElements(jogger, Other.FILTER_JOGGER));
     }
 
     @GetMapping("/shirt")
@@ -41,11 +42,6 @@ public class FitController {
     @GetMapping("/getfit")
     public String getFit(){
         List<Element> myFit = fitService.getRandomFit(fit);
-        System.out.println("LIST SIZE: " + myFit.size());
-        for(Element element : myFit){
-            System.out.println(element.text());
-        }
-
         return myFit.toString();
     }
 
