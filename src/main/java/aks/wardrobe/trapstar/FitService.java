@@ -1,11 +1,13 @@
 package aks.wardrobe.trapstar;
 
-import aks.wardrobe.consts.Other;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
+
+import aks.wardrobe.consts.Other;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Random;
@@ -41,7 +43,7 @@ public class FitService {
         }
         return null;
     }
-    public List<Element> getRandomFit(Fit fit){
+    public List<Fit> getRandomFit(FitsManager fit){
 
         if(fit.getShirts().isEmpty() && fit.getBottoms().isEmpty()){
             throw new NullPointerException("Haven't scrapet shit");
@@ -55,10 +57,39 @@ public class FitService {
         shirt = fit.getShirts().get(randomShirt);
         jogger = fit.getBottoms().get(randomJogger);
 
-        String filter = "Tracksuit";
-        System.out.println(jogger.text().contains(filter));
-        System.out.println("Text in question: " + jogger.text());
+        Fit top = new Fit.Builder()
+        .name(getName(shirt))
+        .type(Other.TYPE_TOP)
+        .price(getPrice(shirt))
+        .imageFront(null)
+        .imageBack(null)
+        .build();     
+        
+        Fit bottoms = new Fit.Builder()
+        .name(getName(jogger))
+        .type(Other.TYPE_BOTTOMS)
+        .price(getPrice(jogger))
+        .imageFront(null)
+        .imageBack(null)
+        .build();  
 
-        return List.of(shirt, jogger);
+        return List.of(top, bottoms);
     }
+
+    public String getName(Element element){
+        return element.select("div.text-left").select("p").text();
+    }
+    public String getPrice(Element element) {
+        String price = getPriceSpan(element);
+        return price != null && !price.isEmpty() ? price : getPriceSpans(element);
+    }
+    // EXTRA 
+    String getPriceSpan(Element element){
+        String price = element.select("div.text-left").select("span").text();
+        return price.substring(price.indexOf("£"), price.length() - Other.PRICE_CHOPPER.length()).trim();
+    }
+    String getPriceSpans(Element element){
+        return element.select("div.text-left").select("span.text-scheme-accent").text().substring(Other.PRICE_CHOPPER.length());
+    }
+    
 }

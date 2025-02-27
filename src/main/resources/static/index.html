@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Trapstar</title>
+</head>
+<body>
+    <button id="return-button">Return</button>
+    <script>
+        document.getElementById("return-button").addEventListener('click', function(){
+            returnWhatever();
+        })
+
+        function returnWhatever(){
+            fetch("/trapstar/getfit")
+            .then(response => {return response.text()})
+            .then(data => {
+                console.log(data)
+            })
+        }
+        
+    </script>
+</body>
+</html>
