@@ -45,7 +45,9 @@ public class FitService {
     }
     public List<Fit> getRandomFit(FitsManager fit){
 
-        if(fit.getShirts().isEmpty() && fit.getBottoms().isEmpty()){
+        List<Element> shirtsList = fit.getShirts();
+        List<Element> joggersList = fit.getBottoms();
+        if(shirtsList.isEmpty() || joggersList.isEmpty() || shirtsList == null || joggersList == null){
             throw new NullPointerException("Haven't scrapet shit");
         }
 
@@ -54,8 +56,8 @@ public class FitService {
         int randomJogger = random.nextInt(fit.getBottoms().size());
 
         Element shirt, jogger;
-        shirt = fit.getShirts().get(randomShirt);
-        jogger = fit.getBottoms().get(randomJogger);
+        shirt = shirtsList.get(randomShirt);
+        jogger = joggersList.get(randomJogger);
 
         Fit top = new Fit.Builder()
         .name(getName(shirt))
@@ -81,15 +83,35 @@ public class FitService {
     }
     public String getPrice(Element element) {
         String price = getPriceSpan(element);
+        System.out.println("MANCHESTER'S BOOGEYMAN " + price);
         return price != null && !price.isEmpty() ? price : getPriceSpans(element);
     }
     // EXTRA 
     String getPriceSpan(Element element){
-        String price = element.select("div.text-left").select("span").text();
-        return price.substring(price.indexOf("£"), price.length() - Other.PRICE_CHOPPER.length()).trim();
+        String priceString = element.select("div.text-left").select("span").text();
+        String price = "";
+        try{
+            if(priceString.contains(Other.PRICE_CHOPPER)){
+                price = priceString.substring(priceString.indexOf("£"), priceString.length() - (Other.PRICE_CHOPPER.length()) - 1).trim();
+            }
+            else{
+                price = priceString.substring(priceString.indexOf("£")).trim();
+            }
+        }catch(Exception e){
+            System.out.println("Error: " + e.getMessage());
+        } 
+        return price;
     }
     String getPriceSpans(Element element){
-        return element.select("div.text-left").select("span.text-scheme-accent").text().substring(Other.PRICE_CHOPPER.length());
+        String priceString = element.select("div.text-left").select("span.text-scheme-accent").text(); 
+        System.out.println("ROOT CAUSE OF THE FUCKERY "+priceString);
+        String price = "";
+        try{
+            price = priceString.substring(Other.PRICE_CHOPPER.length() - 1).trim();
+        }catch(Exception e){
+            System.out.println("Error [two prices]: " + e.getMessage());
+        }
+        return price;
     }
     
 }
