@@ -5,12 +5,9 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
-
 import aks.wardrobe.consts.Other;
-
 import java.io.IOException;
 import java.util.List;
-import java.util.Random;
 
 @Service
 public class FitService {
@@ -43,62 +40,40 @@ public class FitService {
         }
         return null;
     }
-    public List<Fit> getRandomFit(FitsManager fit){
+    public List<Fit> getRandomFit(FitsManager fit, ITEM_Shirt shirt, ITEM_Jogger jogger){
 
-        if(fit.getShirts().isEmpty() && fit.getBottoms().isEmpty()){
-            throw new NullPointerException("Haven't scraped shit");
+        List<Element> shirtsList = fit.getShirts();
+        List<Element> joggersList = fit.getBottoms();
+        if(shirtsList.isEmpty() || joggersList.isEmpty() || shirtsList == null || joggersList == null){
+            throw new NullPointerException("Haven't scrapet shit");
         }
 
-        Random random = new Random();
-        int randomShirt = random.nextInt(fit.getShirts().size());
-        int randomJogger = random.nextInt(fit.getBottoms().size());
+        // SELECT ONE ITEM FROM EACH LIST
+        shirt.selectItem(shirtsList);
+        jogger.selectItem(joggersList);
+        // LOAD ITEMS' IMAGES
+        shirt.getItemImages();
+        jogger.getItemImages();
 
-        Element shirt, jogger;
-        shirt = fit.getShirts().get(randomShirt);
-        jogger = fit.getBottoms().get(randomJogger);
-
+        // BUILD TOP
         Fit top = new Fit.Builder()
-        .name(getName(shirt))
+        .name(shirt.getName())
         .type(Other.TYPE_TOP)
-        .price(getPrice(shirt))
-        .imageFront(null)
-        .imageBack(null)
+        .price(shirt.getPrice())
+        .imageFront(shirt.getImage(Item.FRONT_IMG))
+        .imageBack(shirt.getImage(Item.BACK_IMG))
         .build();     
         
+        // BUILD BOTTOMS
         Fit bottoms = new Fit.Builder()
-        .name(getName(jogger))
+        .name(jogger.getName())
         .type(Other.TYPE_BOTTOMS)
-        .price(getPrice(jogger))
-        .imageFront(null)
-        .imageBack(null)
+        .price(jogger.getPrice())
+        .imageFront(jogger.getImage(Item.FRONT_IMG))
+        .imageBack(jogger.getImage(Item.BACK_IMG))
         .build();  
 
         return List.of(top, bottoms);
     }
 
-    String getName(Element element){
-        return element.select("div.text-left").select("p").text();
-    }
-    String getPrice(Element element) {
-        String price = getPriceSpan(element);
-        return price != null && !price.isEmpty() ? price : getPriceSpans(element);
-    }
-    // EXTRA 
-    String getPriceSpan(Element element){
-        String price = element.select("div.text-left").select("span").text();
-        return price.substring(price.indexOf("£"), price.length() - Other.PRICE_CHOPPER.length()).trim();
-    }
-    String getPriceSpans(Element element){
-        return element.select("div.text-left").select("span.text-scheme-accent").text().substring(Other.PRICE_CHOPPER.length());
-    }
-    String[] getItemImage(Elements elements){
-
-        String[] links = new String[2];
-        for(int i = 0; i < links.length; i++){
-            links[i] = elements.attr("src");
-        }
-        return links;
-    }
-
-    
 }

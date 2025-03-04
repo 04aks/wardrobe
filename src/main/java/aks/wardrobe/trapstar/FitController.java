@@ -24,9 +24,9 @@ public class FitController {
         fitsM = new FitsManager(fitService.getElements(shirt, null), fitService.getElements(jogger, Other.FILTER_JOGGER));
     }
 
-    @GetMapping("/getfit")
+    @GetMapping("/fit")
     public List<Fit> getFit(){
-        List<Fit> myFit = fitService.getRandomFit(fitsM);
+        List<Fit> myFit = fitService.getRandomFit(fitsM, shirt, jogger);
         return myFit;
     }
 
