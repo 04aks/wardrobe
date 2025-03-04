@@ -46,7 +46,7 @@ public class FitService {
     public List<Fit> getRandomFit(FitsManager fit){
 
         if(fit.getShirts().isEmpty() && fit.getBottoms().isEmpty()){
-            throw new NullPointerException("Haven't scrapet shit");
+            throw new NullPointerException("Haven't scraped shit");
         }
 
         Random random = new Random();
@@ -76,10 +76,10 @@ public class FitService {
         return List.of(top, bottoms);
     }
 
-    public String getName(Element element){
+    String getName(Element element){
         return element.select("div.text-left").select("p").text();
     }
-    public String getPrice(Element element) {
+    String getPrice(Element element) {
         String price = getPriceSpan(element);
         return price != null && !price.isEmpty() ? price : getPriceSpans(element);
     }
@@ -91,5 +91,14 @@ public class FitService {
     String getPriceSpans(Element element){
         return element.select("div.text-left").select("span.text-scheme-accent").text().substring(Other.PRICE_CHOPPER.length());
     }
+    String[] getItemImage(Elements elements){
+
+        String[] links = new String[2];
+        for(int i = 0; i < links.length; i++){
+            links[i] = elements.attr("src");
+        }
+        return links;
+    }
+
     
 }

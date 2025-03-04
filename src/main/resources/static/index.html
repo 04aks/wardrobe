@@ -4,9 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Trapstar</title>
+    <style>
+        .container{
+            display: flex;
+            flex-direction: column;
+            /* justify-content: center; */
+            align-items: center;
+            gap: 10px;
+        }
+        .item{
+            background: red;
+            width: 250px;
+            height: 250px;
+            border-radius: 20px;
+        }
+    </style>
 </head>
 <body>
-    <button id="return-button">Return</button>
+    <div class="container">
+
+        <div class="item" id="shirt"></div>
+        <div class="item" id="bottoms"></div>
+        <button id="return-button">Fit</button>
+    </div>
+    
     <script>
         document.getElementById("return-button").addEventListener('click', function(){
             returnWhatever();
