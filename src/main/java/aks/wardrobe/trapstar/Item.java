@@ -64,17 +64,20 @@ public class Item {
                 price = priceString.substring(priceString.indexOf("£")).trim();
             }
         }catch(Exception e){
+            System.out.println("SPAAAAAAAAAAN:: " + item.html());
             System.out.println("Error: " + e.getMessage());
         } 
+        
         return price;
     }
     String getPriceSpans(){
         String priceString = item.select("div.text-left").select("span.text-scheme-accent").text(); 
-        // System.out.println("ROOT CAUSE OF THE FUCKERY "+priceString);
         String price = "";
         try{
+            
             price = priceString.substring(Other.PRICE_CHOPPER.length() - 1).trim();
         }catch(Exception e){
+            System.out.println("SPAAAAAAAANS: "+item.html());
             System.out.println("Error [two prices]: " + e.getMessage());
         }
         return price;
